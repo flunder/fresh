@@ -58,3 +58,25 @@ export const CustomLayoutSpring = {
     update: { type: LayoutAnimation.Types.spring, springDamping: 0.7 },
     delete: { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.scaleXY, springDamping: 0.7 }
 };
+
+/*
+    A list of locations
+*/
+
+export const Places = [
+    {
+        city: 'London, UK',
+        hood: 'Bethnal G.',
+        street: 'Mullet Gardens'
+    },
+    {
+        city: 'Berlin, Germany',
+        hood: 'Prenzlauer B.',
+        street: 'Paul Robeson Strasse'
+    },
+    {
+        city: 'Seongbuk, Seoul',
+        hood: 'Dongsun',
+        street: 'Sungshin w.univ'
+    },
+]

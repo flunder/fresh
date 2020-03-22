@@ -64,7 +64,7 @@ function Main(props) {
         <View>
 
             <Animated.View style={{ top: 0, left: 0, zIndex: 100, position: 'absolute', alignItems: 'center', width, top: 130, transform: [{ translateY: locationOffsetY }] }}>
-                <Animated.Text style={{ color: locationFontColor, fontWeight: '700', lineHeight: 14, opacity: locationCountryOpacity }}>SEONGBUK, SEOUL</Animated.Text>
+                <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', fontWeight: '700', lineHeight: 14, opacity: locationCountryOpacity }}>SEONGBUK, SEOUL</Animated.Text>
                 <Animated.Text style={{ color: locationFontColor, fontWeight: '700', fontSize: 28, lineHeight: 30, transform: [{ scale: locationCityScale }, { translateY: locationCityOffsetY }] }}>DONGSUN</Animated.Text>
                 <Animated.Text style={{ color: locationFontColor, fontWeight: '700', lineHeight: 14 }}>SUNGSHIN W.UNIV</Animated.Text>
             </Animated.View>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar, Text, View } from 'react-native';
+import { StatusBar, Text, View, YellowBox } from 'react-native';
 import { Main } from './Components'
 import * as Font from 'expo-font'
 import { setCustomText } from 'react-native-global-props'
@@ -9,8 +9,13 @@ export default function App() {
     const [fontsLoaded, setFontsLoaded] = useState(false);
 
     useEffect(() => {
+        disableWarnings();
         loadFonts();
     }, []);
+
+    disableWarnings = () => {
+        console.disableYellowBox = true;
+    }
 
     loadFonts = async () => {
         await Font.loadAsync({

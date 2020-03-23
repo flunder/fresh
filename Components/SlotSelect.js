@@ -18,32 +18,36 @@ function SlotSelect(props) {
     const [availableTimes, setAvailableTimes] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const offsetX = useRef(new Animated.Value(0)).current;
+    const submitButtonOpacity = useRef(new Animated.Value(1)).current;
+    const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
     useEffect(() => {
-        getAvailableTimes()
-        addScrollListener();
+        getAvailableTimes();  // Prepare Data, opening times and slots
+        addScrollListener();  // A listener to work out what the user selected
     }, []);
 
     useEffect(() => {
-        // animatedNewSelection();
-        console.log(selectedIndex);
+        if (!availableTimes) return;
         LayoutAnimation.configureNext(CustomLayoutSpring)
     }, [selectedIndex]);
 
     padNumberBase = (n) => ('0000'+n).slice(-4);
 
-    getAvailableTimes = () => {
+    getRandomSlots = () => Math.floor(Math.random()*3)
+
+    getAvailableTimes = async () => {
         const availableTimes = [];
 
         for (var i = openingTimes.open; i <= openingTimes.close; i++) {
-            availableTimes.push({ time: padNumberBase(i + '00'), slotsAvailable: 2 });
+            availableTimes.push({ time: padNumberBase(i + '00'), slotsAvailable: getRandomSlots() });
 
-            if (i !== openingTimes.close) {
-                availableTimes.push({ time: padNumberBase(i + '30'), slotsAvailable: 2 });
+            if (i !== openingTimes.close) { // Remove last half an our
+                availableTimes.push({ time: padNumberBase(i + '30'), slotsAvailable: getRandomSlots() });
             }
         }
 
-        setAvailableTimes(availableTimes);
+        await setAvailableTimes(availableTimes);
+        decideSubmitButton();
     }
 
     addScrollListener = () => {
@@ -57,8 +61,17 @@ function SlotSelect(props) {
 
     calculateSelectedIndex = ({offsetX}) => {
         const newIndex = Math.round(offsetX / itemWidth);
-
         if (newIndex !== selectedIndex) setSelectedIndex(newIndex);
+    }
+
+    decideSubmitButton = () => {
+
+        console.log(availableTimes,selectedIndex);
+
+        const active = availableTimes[selectedIndex].slotsAvailable != 0
+
+        setSubmitButtonDisabled(!active)
+        Animated.timing( submitButtonOpacity, { toValue: active ? 1 : 0.5, duration: 300 } ).start()
     }
 
     renderItem = ({ item, index }) => {
@@ -100,24 +113,28 @@ function SlotSelect(props) {
                 data={availableTimes}
                 keyExtractor={item => `${item.time}`}
                 renderItem={renderItem}
+                extraData={selectedIndex}
                 horizontal
 
                 snapToAlignment="start"
                 snapToInterval={itemWidth}
                 decelerationRate="fast"
                 showsHorizontalScrollIndicator={false}
-                onScroll={viewScroll}
 
-                extraData={selectedIndex}
+                onScroll={viewScroll}
+                onMomentumScrollEnd={decideSubmitButton}
             />
 
             <View style={{ height: height * 0.1, alignItems: 'center' }}>
+
                 <Svg style={{ marginBottom: 15 }} width={185} height={8} viewBox="0 0 185 8" {...props}>
                     <Path stroke="#FFF" strokeWidth={1} d="M1 6.5h89.154L94.9 2l4.658 4.5H183.5" fill="none" fillRule="evenodd" strokeLinecap="square" />
                 </Svg>
-                <TouchableOpacity activeOpacity={0.85}>
-                    <Text style={{ color: 'white', textTransform: 'uppercase', fontSize: 18, fontFamily: 'CircularStd-Black' }}>Go for Refresh</Text>
+
+                <TouchableOpacity onPress={() => { console.log('pressed');}} activeOpacity={0.85} disabled={submitButtonDisabled}>
+                    <Animated.Text style={{ opacity: submitButtonOpacity, color: 'white', textTransform: 'uppercase', fontSize: 18, fontFamily: 'CircularStd-Black' }}>Go for Refresh</Animated.Text>
                 </TouchableOpacity>
+
             </View>
         </Animated.View>
 

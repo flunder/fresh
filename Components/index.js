@@ -1,4 +1,5 @@
 export * from './Main'
-export * from './Page1'
-export * from './Page2'
+export * from './Intro'
+export * from './SlotSelect'
+export * from './AddOnSelect'
 export * from './Gradient'

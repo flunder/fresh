@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View } from 'react-native'
 
-function Page1(props) {
+function Intro(props) {
 
     // const [page, setPage] = useState(0);
 
@@ -16,4 +16,4 @@ function Page1(props) {
     )
 }
 
-export { Page1 }
+export { Intro }

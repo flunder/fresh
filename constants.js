@@ -53,7 +53,7 @@ export const LayoutAnimationConfig = {
 };
 
 export const CustomLayoutSpring = {
-    duration: 400,
+    duration: 800,
     create: { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.scaleXY, springDamping: 0.7 },
     update: { type: LayoutAnimation.Types.spring, springDamping: 0.7 },
     delete: { type: LayoutAnimation.Types.spring, property: LayoutAnimation.Properties.scaleXY, springDamping: 0.7 }

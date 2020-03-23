@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Animated, Dimensions, FlatList, Text, View } from 'react-native'
-import { Page1, Page2 } from './'
+import { Intro, SlotSelect, AddOnSelect, Gradient } from './'
 import { Colors } from '../constants'
 import { useLocation } from '../Hooks'
 const { width, height } = Dimensions.get('window');
@@ -9,10 +9,10 @@ const { width, height } = Dimensions.get('window');
 export const pageHeight = height * 0.7;
 
 export const pages = [
-    { id: 1, backgroundColor: 'white', content: <Text>1</Text> },
-    { id: 2, backgroundColor: Colors.primary, content: <Text>2</Text> },
-    { id: 3, backgroundColor: 'white', content: <Text>3</Text> },
-    { id: 4, backgroundColor: Colors.primary, content: <Text>4</Text> },
+    { id: 1, backgroundColor: 'white' },
+    { id: 2, backgroundColor: Colors.primary },
+    { id: 3, backgroundColor: 'white' },
+    { id: 4, backgroundColor: Colors.primary },
 ]
 
 function Main(props) {
@@ -22,7 +22,7 @@ function Main(props) {
     const location = React.useMemo(() => useLocation(), []);
 
     useEffect(() => {
-        addScrollListenerForDebug();
+        // addScrollListenerForDebug();
     }, []);
 
     const addScrollListenerForDebug = () => {
@@ -35,7 +35,7 @@ function Main(props) {
     }
 
     const locationCountryOpacity = pageOffsetY.interpolate({
-        inputRange: [0, pageHeight / 3, pageHeight],
+        inputRange: [0, pageHeight / 3, pageHeight / 1.1],
         outputRange: [1, 1, 0],
     })
 
@@ -62,11 +62,40 @@ function Main(props) {
         extrapolate: 'clamp'
     })
 
+    const slotSelectOpacity = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight / 1.5],
+        outputRange: [1, 0],
+        extrapolate: 'clamp'
+    })
+
+    const addOnSelectOpacity = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight],
+        outputRange: [0.3, 1],
+        extrapolate: 'clamp'
+    })
+
     renderItem = ({ item, index }) => {
         return (
             <View style={{ height: pageHeight, width, backgroundColor: item.backgroundColor }}>
-                {item.id === 1 && <Page1 />}
-                {item.id === 2 && <Page2 />}
+
+                {item.backgroundColor === Colors.primary && (
+                    <Gradient
+                        width={width}
+                        height={pageHeight}
+                        style={{ position: 'absolute' }}
+                        color1="#5072F8"
+                        color2="#4C51F7"
+                        direction="normal"
+                    />
+                )}
+
+                {item.id === 1 && <Intro />}
+                {item.id === 2 && (
+                    <View>
+                        <SlotSelect opacity={slotSelectOpacity} />
+                        <AddOnSelect opacity={addOnSelectOpacity} />
+                    </View>
+                )}
             </View>
         )
     }
@@ -80,7 +109,7 @@ function Main(props) {
     return (
         <View>
 
-            <Animated.View style={{ top: 0, left: 0, zIndex: 100, position: 'absolute', alignItems: 'center', width, top: 130, transform: [{ translateY: locationOffsetY }] }}>
+            <Animated.View style={{ top: 0, left: 0, zIndex: 100, position: 'absolute', alignItems: 'center', width, top: 170, transform: [{ translateY: locationOffsetY }] }}>
                 <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', lineHeight: 14,  textTransform: 'uppercase', opacity: locationCountryOpacity }}>{location.city}</Animated.Text>
                 <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', fontSize: 28, lineHeight: 30,  textTransform: 'uppercase', transform: [{ scale: locationCityScale }, { translateY: locationCityOffsetY }] }}>{location.hood}</Animated.Text>
                 <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', lineHeight: 14,  textTransform: 'uppercase' }}>{location.street}</Animated.Text>

@@ -11,6 +11,9 @@ const openingTimes = {
     close: 22
 }
 
+export const openingTimesTotalItems = ((openingTimes.close - openingTimes.open) * 2);
+export const openingTimesTotalWidth = openingTimesTotalItems * itemWidth;
+
 const componentHeight = height * 0.2;
 
 function SlotSelect(props) {
@@ -56,6 +59,8 @@ function SlotSelect(props) {
 
         offsetX.addListener(({value}) => {
             calculateSelectedIndex({ offsetX: value })
+            // Call parent component
+            props.slotOffsetX.setValue(value);
         });
     }
 
@@ -65,9 +70,7 @@ function SlotSelect(props) {
     }
 
     decideSubmitButton = () => {
-
-        console.log(availableTimes,selectedIndex);
-
+        if (!availableTimes || !selectedIndex) return;
         const active = availableTimes[selectedIndex].slotsAvailable != 0
 
         setSubmitButtonDisabled(!active)

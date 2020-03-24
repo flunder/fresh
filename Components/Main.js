@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo  } from 'react'
 import { Animated, Dimensions, FlatList, Text, View } from 'react-native'
 import { Intro, SlotSelect, AddOnSelect, Gradient } from './'
 import { Colors } from '../constants'
 import { useLocation } from '../Hooks'
+
 const { width, height } = Dimensions.get('window');
 
 // Page height used for snap point and animations
@@ -18,7 +19,7 @@ export const pages = [
 function Main(props) {
 
     const pageOffsetY = useRef(new Animated.Value(0)).current;
-
+    const slotOffsetX = useRef(new Animated.Value(0)).current;
     const location = React.useMemo(() => useLocation(), []);
 
     useEffect(() => {
@@ -89,10 +90,10 @@ function Main(props) {
                     />
                 )}
 
-                {item.id === 1 && <Intro />}
+                {item.id === 1 && <Intro slotOffsetX={slotOffsetX} />}
                 {item.id === 2 && (
                     <View>
-                        <SlotSelect opacity={slotSelectOpacity} />
+                        <SlotSelect opacity={slotSelectOpacity} slotOffsetX={slotOffsetX} />
                         <AddOnSelect opacity={addOnSelectOpacity} />
                     </View>
                 )}

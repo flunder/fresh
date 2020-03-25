@@ -6,7 +6,7 @@ const { width, height } = Dimensions.get('window');
 
 const itemWidth = 50;
 
-const openingTimes = {
+export const openingTimes = {
     open: 8,
     close: 22
 }

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo  } from 'react'
 import { Animated, Dimensions, FlatList, Text, View } from 'react-native'
+import Svg, { Path } from "react-native-svg"
 import { Intro, SlotSelect, AddOnSelect, Gradient } from './'
 import { Colors } from '../constants'
 import { useLocation } from '../Hooks'
+import { openingTimes } from './SlotSelect'
+import { padNumber } from '../helpers'
 
 const { width, height } = Dimensions.get('window');
 
@@ -75,6 +78,24 @@ function Main(props) {
         extrapolate: 'clamp'
     })
 
+    const pullUpOpacity = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight-50, pageHeight],
+        outputRange: [0, 0, 1],
+        extrapolate: 'clamp'
+    })
+
+    const pullUpOffsetY = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight],
+        outputRange: [-200, -10],
+        extrapolate: 'clamp'
+    })
+
+    const openingTimesColor = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight],
+        outputRange: ['#3E3E40', '#FFF'],
+        extrapolate: 'clamp'
+    })
+
     renderItem = ({ item, index }) => {
         return (
             <View style={{ height: pageHeight, width, backgroundColor: item.backgroundColor }}>
@@ -111,9 +132,21 @@ function Main(props) {
         <View>
 
             <Animated.View style={{ top: 0, left: 0, zIndex: 100, position: 'absolute', alignItems: 'center', width, top: 170, transform: [{ translateY: locationOffsetY }] }}>
+                <Animated.View style={{ opacity: pullUpOpacity, transform: [{ translateY: pullUpOffsetY }] }}>
+                    <Svg width={11} height={6} viewBox="0 0 11 6">
+                        <Path stroke="white" strokeWidth={1.7} d="M1 5l4.5-4L10 5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
+                    </Svg>
+                </Animated.View>
                 <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', lineHeight: 14,  textTransform: 'uppercase', opacity: locationCountryOpacity }}>{location.city}</Animated.Text>
                 <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', fontSize: 28, lineHeight: 30,  textTransform: 'uppercase', transform: [{ scale: locationCityScale }, { translateY: locationCityOffsetY }] }}>{location.hood}</Animated.Text>
                 <Animated.Text style={{ color: locationFontColor, fontFamily: 'CircularStd-Black', lineHeight: 14,  textTransform: 'uppercase' }}>{location.street}</Animated.Text>
+                <View style={{ width: 220, flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                    <Animated.Text style={{ color: openingTimesColor, fontSize: 15, marginRight: 5, fontFamily: 'CircularStd-Book' }}>{padNumber(2, openingTimes.open)}:00</Animated.Text>
+                    <Animated.View style={{ borderColor: openingTimesColor, flex: 1, borderBottomWidth: 1, height: 1 }} />
+                    <Animated.Text style={{ color: openingTimesColor, fontSize: 15, marginLeft: 5, fontFamily: 'CircularStd-Book' }}>{padNumber(2, openingTimes.close)}:00</Animated.Text>
+                </View>
+
+
             </Animated.View>
 
             <FlatList

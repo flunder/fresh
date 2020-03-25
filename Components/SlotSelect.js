@@ -70,7 +70,7 @@ function SlotSelect(props) {
     }
 
     decideSubmitButton = () => {
-        if (!availableTimes || !selectedIndex) return;
+        if (!availableTimes || !selectedIndex || !availableTimes[selectedIndex]) return;
         const active = availableTimes[selectedIndex].slotsAvailable != 0
 
         setSubmitButtonDisabled(!active)

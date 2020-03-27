@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import { Animated, Dimensions, Text, View } from 'react-native'
+import { Animated, Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import Svg, { Path } from "react-native-svg"
 import { pageHeight } from './Main'
 import { Colors } from '../constants'
 
 const { width, height } = Dimensions.get('window');
 
-const options = {
+const opacities = {
+    title: { active: 1, inActive: 0.3 },
+    option: { active: 1, inActive: 0 }
+}
+
+const optionsRaw = {
     set: {
         id: 1,
-        selected: true,
+        selected: false,
         options: false,
         quantity: 1,
         title: "Shower Set",
         price: 2000,
+        titleOpacity: new Animated.Value(opacities.title.inActive),
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     toothbrush: {
         id: 2,
@@ -22,14 +29,18 @@ const options = {
         quantity: 1,
         title: "Toothbrush & Paste",
         price: 500,
+        titleOpacity: new Animated.Value(opacities.title.inActive),
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     shaving: {
         id: 3,
         selected: false,
-        options: ['m', 'f'],
+        options: ['M', 'F'],
         quantity: 1,
         title: "Shaving Set",
         price: 1500,
+        titleOpacity: new Animated.Value(opacities.title.inActive),
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     bathTowel: {
         id: 4,
@@ -38,32 +49,69 @@ const options = {
         quantity: 1,
         title: "Bath Towel",
         price: 750,
+        titleOpacity: new Animated.Value(opacities.title.inActive),
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     additionalTowel: {
         id: 5,
-        selected: true,
+        selected: false,
         options: false,
         quantity: 1,
         title: "Additional Towel",
         price: 500,
+        titleOpacity: new Animated.Value(opacities.title.inActive),
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     underwear: {
         id: 6,
         selected: false,
-        options: ['m', 'f'],
+        options: ['M', 'F'],
         quantity: 1,
         title: "Cotton Underwear",
         price: 1750,
+        titleOpacity: new Animated.Value(opacities.title.inActive),
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
 }
 
+const Checkbox = ({ isActive, tickOpacity }) => (
+    <View style={{ width: 15, height: 15, borderRadius: 2, backgroundColor: 'white', borderWidth: 1, borderColor: 'rgba(150, 150, 150, .5)', alignItems: 'center', justifyContent: 'center' }}>
+        <Animated.View style={{ opacity: tickOpacity, left: 0.5 }}>
+            <Svg width={10} height={8} viewBox="0 0 10 8">
+                <Path
+                    fill="#4F65F8"
+                    fillRule="nonzero"
+                    d="M8.114 0L3.6 4.627 1.486 2.622 0 4.11 3.6 7.6l6-6.114z"
+                />
+            </Svg>
+        </Animated.View>
+    </View>
+)
+
 function AddOnSelect(props) {
 
-    // const [page, setPage] = useState(0);
+    const [options, setOptions] = useState(optionsRaw);
 
     // useEffect(() => {
     // }, []);
 
+    toggleOption = ({ id }) => {
+        const updatedOptions = { ...options }
+        const newSelectedState = !options[id].selected;
+
+        updatedOptions[id] = {
+            ...options[id],
+            selected: newSelectedState
+        }
+
+        Animated.parallel([
+            Animated.spring(updatedOptions[id].titleOpacity, { toValue: newSelectedState ? opacities.title.active : opacities.title.inActive }),
+            Animated.spring(updatedOptions[id].optionOpacity, { toValue: newSelectedState ? opacities.option.active : opacities.option.inActive }),
+        ]).start();
+
+
+        setOptions(updatedOptions);
+    }
 
 
     return (
@@ -82,11 +130,25 @@ function AddOnSelect(props) {
                         const option = options[index];
 
                         return (
-                            <View key={option.id} style={{ flexDirection: 'row', paddingVertical: 11, ...styles.borderBottom, opacity: option.selected ? 1 : 0.5 }}>
-                                <Text style={styles.text}>{option.selected ? "1" : "0"}</Text>
-                                <Text style={[styles.text, styles.title]}>{option.title}</Text>
-                                <Text style={[styles.text, styles.centered, styles.small]}>{option.options ? option.options[0] : "-"}</Text>
-                                <Text style={[styles.text, styles.centered, styles.small]}>{option.selected && 1}</Text>
+                            <View key={option.id} style={{ flexDirection: 'row', paddingVertical: 11, ...styles.borderBottom }}>
+
+                                <Animated.View style={{ flex: 1, flexDirection: 'row', opacity: option.titleOpacity }}>
+
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        style={{ flexDirection: 'row', flex: 1, alignItems: 'center' }}
+                                        hitSlop={{ top: 11, bottom: 11, left: 10, right: 10 }}
+                                        onPress={() => { toggleOption({ id: index }) }}>
+                                        <Checkbox isActive={option.selected} tickOpacity={option.optionOpacity} />
+                                        <Text style={[styles.text, styles.title]}>{option.title}</Text>
+                                    </TouchableOpacity>
+
+                                    <Animated.View style={{ flex: 0.55, flexDirection: 'row', opacity: option.optionOpacity }}>
+                                        <Text style={{...styles.text, ...styles.centered, flex: 1 }}>{option.options ? option.options[0] : "-"}</Text>
+                                        <Text style={{...styles.text, ...styles.centered, flex: 1 }}>1</Text>
+                                    </Animated.View>
+                                </Animated.View>
+
                             </View>
                         )
 

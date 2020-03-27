@@ -13,10 +13,10 @@ const { width, height } = Dimensions.get('window');
 export const pageHeight = height * 0.7;
 
 export const pages = [
-    { id: 1, backgroundColor: 'white' },
-    { id: 2, backgroundColor: Colors.primary },
-    { id: 3, backgroundColor: 'white' },
-    { id: 4, backgroundColor: Colors.primary },
+    { id: 1, backgroundColor: 'white', pageHeight: pageHeight },
+    { id: 2, backgroundColor: Colors.primary, pageHeight: height },
+    { id: 3, backgroundColor: 'white', pageHeight: pageHeight },
+    { id: 4, backgroundColor: Colors.primary, pageHeight: pageHeight },
 ]
 
 function Main(props) {
@@ -78,8 +78,8 @@ function Main(props) {
     })
 
     const addOnSelectOpacity = pageOffsetY.interpolate({
-        inputRange: [0, pageHeight],
-        outputRange: [0.3, 1],
+        inputRange: [0, pageHeight/3, pageHeight],
+        outputRange: [0.1, 0.3, 1],
         extrapolate: 'clamp'
     })
 
@@ -109,12 +109,12 @@ function Main(props) {
 
     renderItem = ({ item, index }) => {
         return (
-            <View style={{ height: pageHeight, width, backgroundColor: item.backgroundColor }}>
+            <View style={{ height: item.pageHeight, width, backgroundColor: item.backgroundColor }}>
 
                 {item.backgroundColor === Colors.primary && (
                     <Gradient
                         width={width}
-                        height={pageHeight}
+                        height={item.pageHeight}
                         style={{ position: 'absolute' }}
                         color1="#5072F8"
                         color2="#4C51F7"
@@ -131,6 +131,18 @@ function Main(props) {
                 )}
             </View>
         )
+    }
+
+    const getPageOffsets = () => {
+        var incrementalPages = [];
+        var inc = 0;
+
+        for (var i = 0; i < pages.length; i++) {
+            inc = inc + pages[i].pageHeight;
+            incrementalPages[i] = inc;
+        }
+
+        return incrementalPages;
     }
 
     viewScroll = Animated.event(
@@ -164,7 +176,8 @@ function Main(props) {
                 renderItem={renderItem}
 
                 snapToAlignment="start"
-                snapToInterval={pageHeight}
+                // snapToInterval={pageHeight}
+                snapToOffsets={getPageOffsets()}
                 decelerationRate="fast"
                 showsVerticalScrollIndicator={false}
                 onScroll={viewScroll}

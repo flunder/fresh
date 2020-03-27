@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Animated, Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import Svg, { Path } from "react-native-svg"
 import { pageHeight } from './Main'
@@ -20,7 +20,8 @@ const optionsRaw = {
         title: "Shower Set",
         price: 2000,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive)
+        optionOpacity: new Animated.Value(opacities.option.inActive),
+        quantityOffsetY: new Animated.Value(0)
     },
     toothbrush: {
         id: 2,
@@ -30,7 +31,8 @@ const optionsRaw = {
         title: "Toothbrush & Paste",
         price: 500,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive)
+        optionOpacity: new Animated.Value(opacities.option.inActive),
+        quantityOffsetY: new Animated.Value(0)
     },
     shaving: {
         id: 3,
@@ -40,7 +42,8 @@ const optionsRaw = {
         title: "Shaving Set",
         price: 1500,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive)
+        optionOpacity: new Animated.Value(opacities.option.inActive),
+        quantityOffsetY: new Animated.Value(0)
     },
     bathTowel: {
         id: 4,
@@ -50,7 +53,8 @@ const optionsRaw = {
         title: "Bath Towel",
         price: 750,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive)
+        optionOpacity: new Animated.Value(opacities.option.inActive),
+        quantityOffsetY: new Animated.Value(0)
     },
     additionalTowel: {
         id: 5,
@@ -60,7 +64,8 @@ const optionsRaw = {
         title: "Additional Towel",
         price: 500,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive)
+        optionOpacity: new Animated.Value(opacities.option.inActive),
+        quantityOffsetY: new Animated.Value(0)
     },
     underwear: {
         id: 6,
@@ -70,7 +75,8 @@ const optionsRaw = {
         title: "Cotton Underwear",
         price: 1750,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive)
+        optionOpacity: new Animated.Value(opacities.option.inActive),
+        quantityOffsetY: new Animated.Value(0)
     },
 }
 
@@ -88,6 +94,56 @@ const Checkbox = ({ isActive, tickOpacity }) => (
     </View>
 )
 
+function FlipOption({ style, text, options, updateState, active, optionID }) {
+
+    const [optionIndex, setOptionIndex] = useState(0);
+    const offsetY = useRef(new Animated.Value(0)).current;
+    const lineHeight = 17.5;
+
+    onPress = () => {
+        if (!active) return;
+        if (!options) return;
+
+        const currentValue = offsetY.__getValue();
+
+        // Skip back to the first value at the end.
+        // Adding 5 to offset the bounce effect causing issues
+        const newValue = currentValue - lineHeight <= -(options.length * lineHeight) + 5 ? 0 : currentValue - lineHeight;
+        const newOptionIndex = optionIndex >= options.length-1 ? 0 : optionIndex + 1;
+
+        // Spring Animate the Value
+        Animated.spring(offsetY, { toValue: newValue, tension: 70 }).start();
+
+        // Hold on to the current Index
+        setOptionIndex(newOptionIndex);
+
+        // Update the state in the upper scope
+        updateState({
+            optionID,
+            value: options[newOptionIndex]
+        });
+    }
+
+    renderOptions = () => {
+        if (!options) return <Text style={{...style, lineHeight: lineHeight }}>-</Text>;
+
+        return options.map(o => (
+            <Text key={o} style={{...style, lineHeight: lineHeight }}>
+                {o}
+            </Text>
+        ))
+
+    }
+
+    return (
+        <TouchableOpacity style={{ flex: 1, height: 18, overflow: 'hidden' }} activeOpacity={0.9} onPress={onPress} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Animated.View style={{ transform: [{ translateY: offsetY }]}}>
+                {renderOptions()}
+            </Animated.View>
+        </TouchableOpacity>
+    )
+
+}
 function AddOnSelect(props) {
 
     const [options, setOptions] = useState(optionsRaw);
@@ -96,6 +152,7 @@ function AddOnSelect(props) {
     // }, []);
 
     toggleOption = ({ id }) => {
+        // Update State
         const updatedOptions = { ...options }
         const newSelectedState = !options[id].selected;
 
@@ -104,15 +161,25 @@ function AddOnSelect(props) {
             selected: newSelectedState
         }
 
+        // Animate
         Animated.parallel([
             Animated.spring(updatedOptions[id].titleOpacity, { toValue: newSelectedState ? opacities.title.active : opacities.title.inActive }),
             Animated.spring(updatedOptions[id].optionOpacity, { toValue: newSelectedState ? opacities.option.active : opacities.option.inActive }),
         ]).start();
 
-
         setOptions(updatedOptions);
     }
 
+    setOptionQuantity = ({ optionID, value })  => {
+        const updatedOptions = { ...options }
+
+        updatedOptions[optionID] = {
+            ...options[optionID],
+            quantity: value
+        }
+
+        setOptions(updatedOptions);
+    }
 
     return (
         <View>
@@ -144,8 +211,24 @@ function AddOnSelect(props) {
                                     </TouchableOpacity>
 
                                     <Animated.View style={{ flex: 0.55, flexDirection: 'row', opacity: option.optionOpacity }}>
-                                        <Text style={{...styles.text, ...styles.centered, flex: 1 }}>{option.options ? option.options[0] : "-"}</Text>
-                                        <Text style={{...styles.text, ...styles.centered, flex: 1 }}>1</Text>
+                                        {/* <Text style={{...styles.text, ...styles.centered, flex: 1 }}>{option.options ? option.options[0] : "-"}</Text> */}
+                                        <FlipOption
+                                            style={{ ...styles.text, ...styles.centered }}
+                                            updateState={setOptionQuantity}
+                                            optionID={index}
+                                            options={option.options}
+                                            text={option.quantity}
+                                            active={option.selected}
+                                        />
+
+                                        <FlipOption
+                                            style={{ ...styles.text, ...styles.centered }}
+                                            updateState={setOptionQuantity}
+                                            optionID={index}
+                                            options={[1,2,3]}
+                                            text={option.quantity}
+                                            active={option.selected}
+                                        />
                                     </Animated.View>
                                 </Animated.View>
 

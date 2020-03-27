@@ -20,8 +20,7 @@ const optionsRaw = {
         title: "Shower Set",
         price: 2000,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive),
-        quantityOffsetY: new Animated.Value(0)
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     toothbrush: {
         id: 2,
@@ -31,8 +30,7 @@ const optionsRaw = {
         title: "Toothbrush & Paste",
         price: 500,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive),
-        quantityOffsetY: new Animated.Value(0)
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     shaving: {
         id: 3,
@@ -42,8 +40,7 @@ const optionsRaw = {
         title: "Shaving Set",
         price: 1500,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive),
-        quantityOffsetY: new Animated.Value(0)
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     bathTowel: {
         id: 4,
@@ -53,8 +50,7 @@ const optionsRaw = {
         title: "Bath Towel",
         price: 750,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive),
-        quantityOffsetY: new Animated.Value(0)
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     additionalTowel: {
         id: 5,
@@ -64,8 +60,7 @@ const optionsRaw = {
         title: "Additional Towel",
         price: 500,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive),
-        quantityOffsetY: new Animated.Value(0)
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
     underwear: {
         id: 6,
@@ -75,8 +70,7 @@ const optionsRaw = {
         title: "Cotton Underwear",
         price: 1750,
         titleOpacity: new Animated.Value(opacities.title.inActive),
-        optionOpacity: new Animated.Value(opacities.option.inActive),
-        quantityOffsetY: new Animated.Value(0)
+        optionOpacity: new Animated.Value(opacities.option.inActive)
     },
 }
 
@@ -132,7 +126,6 @@ function FlipOption({ style, text, options, updateState, active, optionID }) {
                 {o}
             </Text>
         ))
-
     }
 
     return (

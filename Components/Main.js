@@ -176,14 +176,10 @@ function Main(props) {
                 renderItem={renderItem}
 
                 snapToAlignment="start"
-                // snapToInterval={pageHeight}
                 snapToOffsets={getPageOffsets()}
                 decelerationRate="fast"
                 showsVerticalScrollIndicator={false}
                 onScroll={viewScroll}
-
-                // onViewableItemsChanged={this.handleViewableItemsChanged}
-                // viewabilityConfig={this.viewabilityConfig}
             />
         </View>
     )

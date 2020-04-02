@@ -38,7 +38,7 @@ function Intro(props) {
     }
 
     return (
-        <Animated.View style={{ height: 195, position: 'absolute', bottom: 6 }}>
+        <View style={{ height: 195, position: 'absolute', bottom: 6 }}>
             <Animated.View style={{ transform: [{ translateX: cloudOffsetX }] }}>
                 <Animated.View style={{ transform: [{ translateX: cloudMovement }] }}>
                     <Svg width={1543} height={82} viewBox="0 0 1543 82" {...props} style={{ position: 'absolute', top: 50, left: 56, opacity: 0.8 }}>
@@ -63,7 +63,7 @@ function Intro(props) {
                 style={{ width: CityImageMeta.width / 2, height: CityImageMeta.height / 2, transform: [{ translateX: imageOffsetX }]  }}
                 source={CityImage}
             />
-        </Animated.View>
+        </View>
     )
 }
 

@@ -6,6 +6,7 @@ import { Colors } from '../constants'
 import { useLocation } from '../Hooks'
 import { openingTimes } from './SlotSelect'
 import { padNumber } from '../helpers'
+import { Van, vanDimensions } from './Icon'
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,11 +24,19 @@ function Main(props) {
 
     const pageOffsetY = useRef(new Animated.Value(0)).current;
     const slotOffsetX = useRef(new Animated.Value(0)).current;
+    const helloVan = useRef(new Animated.Value(-vanDimensions.width * 2)).current;
     const location = React.useMemo(() => useLocation(), []);
 
     useEffect(() => {
         // addScrollListenerForDebug();
+        rollVanIn();
     }, []);
+
+    const rollVanIn = () => {
+        setTimeout(() => {
+            Animated.spring(helloVan, { toValue: 0, tension: 0.3 }).start();
+        }, 300)
+    }
 
     const addScrollListenerForDebug = () => {
         // Listener already attached
@@ -107,6 +116,14 @@ function Main(props) {
         extrapolate: 'clamp'
     })
 
+    const vanPosX = Animated.add(
+        pageOffsetY.interpolate({
+            inputRange: [0, pageHeight + 200],
+            outputRange: [width / 2 - (vanDimensions.width/2), width + vanDimensions.width],
+            extrapolate: 'clamp'
+        }
+    ), helloVan);
+
     renderItem = ({ item, index }) => {
         return (
             <View style={{ height: item.pageHeight, width, backgroundColor: item.backgroundColor }}>
@@ -125,6 +142,9 @@ function Main(props) {
                 {item.id === 1 && <Intro slotOffsetX={slotOffsetX} />}
                 {item.id === 2 && (
                     <View>
+                        <Animated.View style={{ position: 'absolute', top: -90, transform: [{ translateX: vanPosX }] }}>
+                            <Van />
+                        </Animated.View>
                         <SlotSelect opacity={slotSelectOpacity} slotOffsetX={slotOffsetX} />
                         <AddOnSelect opacity={addOnSelectOpacity} />
                     </View>

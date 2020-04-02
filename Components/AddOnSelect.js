@@ -6,6 +6,8 @@ import { Colors } from '../constants'
 
 const { width, height } = Dimensions.get('window');
 
+const basePrice = 3000;
+
 const opacities = {
     title: { active: 1, inActive: 0.3 },
     option: { active: 1, inActive: 0 }
@@ -135,14 +137,16 @@ function FlipOption({ style, text, options, updateState, active, optionID }) {
             </Animated.View>
         </TouchableOpacity>
     )
-
 }
+
 function AddOnSelect(props) {
 
     const [options, setOptions] = useState(optionsRaw);
+    const [price, setPrice] = useState(0);
 
-    // useEffect(() => {
-    // }, []);
+    useEffect(() => {
+        updatePrice();
+    }, [options, setOptions]);
 
     toggleOption = ({ id }) => {
         // Update State
@@ -172,6 +176,29 @@ function AddOnSelect(props) {
         }
 
         setOptions(updatedOptions);
+    }
+
+    setOptionOption = ({ optionID, value })  => {
+        const updatedOptions = { ...options }
+
+        updatedOptions[optionID] = {
+            ...options[optionID],
+            option: value
+        }
+
+        setOptions(updatedOptions);
+    }
+
+    updatePrice = () => {
+        console.log('updatePrice');
+        const newPrice = Object.keys(options).reduce((sum, item) => {
+            if (options[item].selected) {
+                return sum + (options[item].price * options[item].quantity)
+            }
+            return sum;
+        }, 0);
+
+        setPrice(newPrice);
     }
 
     return (
@@ -207,7 +234,7 @@ function AddOnSelect(props) {
                                         {/* <Text style={{...styles.text, ...styles.centered, flex: 1 }}>{option.options ? option.options[0] : "-"}</Text> */}
                                         <FlipOption
                                             style={{ ...styles.text, ...styles.centered }}
-                                            updateState={setOptionQuantity}
+                                            updateState={setOptionOption}
                                             optionID={index}
                                             options={option.options}
                                             text={option.quantity}
@@ -242,10 +269,85 @@ function AddOnSelect(props) {
             </Animated.View>
 
             <View style={{ backgroundColor: 'white', height: '100%', zIndex: '-1', alignItems: 'center' }}>
-                <Text style={{ fontSize: 40, paddingTop: 20, color: Colors.primary }}>5008W</Text>
+                <StepInt price={price+basePrice} style={{ fontSize: 40, paddingTop: 20, color: Colors.primary }} />
             </View>
 
         </View>
+    )
+}
+
+function StepInt({ style, price }) {
+
+    const prevValue = useRef(0);
+    const [steps, setSteps] = useState([]);
+    const [value, setValue] = useState(0);
+    const index = useRef(0)
+    const timer = useRef(false);
+
+    useEffect(() => {
+        index.current = 0;
+        // console.log(`going from ${prevValue.current} to ${price}`);
+
+        const steps = getStepInt({
+            from: prevValue.current,
+            to: price,
+            divider: 1.5,
+            steps: 25,
+        });
+
+        setSteps(steps);
+        prevValue.current = price;
+    }, [price])
+
+    useEffect(() => {
+        runAnimation();
+    }, [steps])
+
+    resetTimeout = () => {
+        clearTimeout(timer.current);
+        timer.current = false;
+    }
+
+    runAnimation = () => {
+        resetTimeout();
+
+        timer.current = setTimeout(() => {
+            if (index.current < steps.length) {
+                setValue(parseInt(steps[index.current]));
+                index.current = index.current + 1;
+                runAnimation();
+            } else {
+                resetTimeout();
+            }
+        }, 15)
+    }
+
+    const getStepInt = ({ from, to, divider = 2, steps = 10 }) => {
+        const diff = Math.abs(from - to);
+
+        // Run Reduce on the difference
+        // between the two numbers
+        const result = [...Array(steps)].reduce((acc, currentValue, currentIndex) => {
+            if (currentIndex === 0) {
+                return acc.concat(diff);
+            } else {
+                return acc.concat(acc[currentIndex-1] / divider)
+            }
+        }, []);
+
+        // Add the original number back in
+        const rresult = result.map(r => r + Math.min(from, to));
+
+        // Apply Direction
+        if (from < to) rresult.reverse();
+
+        return rresult;
+    }
+
+    return (
+        <Text style={style}>
+            {value}
+        </Text>
     )
 }
 

@@ -72,11 +72,16 @@ export const Places = [
     {
         city: 'Berlin, Germany',
         hood: 'Prenzlauer B.',
-        street: 'Paul Robeson Strasse'
+        street: 'Paul Robeson Str.'
     },
     {
         city: 'Seongbuk, Seoul',
         hood: 'Dongsun',
         street: 'Sungshin w.univ'
     },
+    {
+        city: 'Athens, GR',
+        hood: 'P. Faliro',
+        street: 'Athinaion'
+    }
 ]

@@ -1,5 +1,4 @@
-An React-Native-Expo implementation attempt of the amazing ShowerTruck
-by Yuree Kang.
+An React-Native-Expo implementation attempt of the amazing ShowerTruck Design by Yuree Kang.
 
 https://www.behance.net/gallery/53807771/Shower-Truck
 

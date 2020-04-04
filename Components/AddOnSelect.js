@@ -269,14 +269,18 @@ function AddOnSelect(props) {
             </Animated.View>
 
             <View style={{ backgroundColor: 'white', height: '100%', zIndex: '-1', alignItems: 'center' }}>
-                <StepInt price={price+basePrice} style={{ fontSize: 40, paddingTop: 20, color: Colors.primary }} />
+                <StepInt
+                    price={price+basePrice}
+                    style={{ fontSize: 40, paddingTop: 20, color: Colors.primary }}
+                    currency={"W"}
+                />
             </View>
 
         </View>
     )
 }
 
-function StepInt({ style, price }) {
+function StepInt({ style, price, currency = false }) {
 
     const prevValue = useRef(0);
     const [steps, setSteps] = useState([]);
@@ -346,7 +350,7 @@ function StepInt({ style, price }) {
 
     return (
         <Text style={style}>
-            {value}
+            {value}{currency}
         </Text>
     )
 }

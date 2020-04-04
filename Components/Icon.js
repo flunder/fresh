@@ -1,5 +1,5 @@
 import * as React from "react"
-import Svg, { Defs, LinearGradient, Stop, G, Path, Circle, } from "react-native-svg"
+import Svg, { Defs, LinearGradient, Stop, G, Mask, Use, Path, Circle, } from "react-native-svg"
 
 export const vanDimensions ={
     width: 135,
@@ -164,6 +164,7 @@ export const Note = (props) => {
         </Svg>
     )
 }
+
 export const ShowerTruckLogo = (props) => {
     return (
         <Svg width={171} height={19} viewBox="0 0 171 19" {...props}>
@@ -174,6 +175,47 @@ export const ShowerTruckLogo = (props) => {
                 fill="#FFF"
                 fillRule="nonzero"
             />
+        </Svg>
+    )
+}
+
+export const Bubble = ({ scale = 1, ...props }) => {
+    return (
+        <Svg width={83 * scale} height={83 * scale} viewBox="0 0 83 83" {...props}>
+            <Defs>
+                <LinearGradient
+                    x1="10.146%"
+                    y1="20.214%"
+                    x2="20.408%"
+                    y2="29.217%"
+                    id="prefix__c"
+                    >
+                    <Stop stopColor="#494FCC" offset="5.112%" />
+                    <Stop stopColor="#FFF" offset="100%" />
+                </LinearGradient>
+                <Circle id="prefix__a" cx={41.3} cy={41.3} r={41.3} />
+            </Defs>
+            <G fill="none" fillRule="evenodd">
+                <Mask id="prefix__b" fill="#fff">
+                    <Use xlinkHref="#prefix__a" />
+                </Mask>
+                <Use fill="#F3F3F7" xlinkHref="#prefix__a" />
+                <Circle
+                    fill="#FFF"
+                    mask="url(#prefix__b)"
+                    cx={39.9}
+                    cy={39.9}
+                    r={41.3}
+                />
+                <Circle
+                    fill="url(#prefix__c)"
+                    opacity={0.407}
+                    mask="url(#prefix__b)"
+                    cx={32.9}
+                    cy={37.1}
+                    r={34.3}
+                />
+            </G>
         </Svg>
     )
 }

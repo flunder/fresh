@@ -3,7 +3,7 @@ import { Animated, Dimensions, Image, Text, TouchableOpacity, View } from 'react
 import Svg, { G, Path } from "react-native-svg"
 import { pageHeight } from './Main'
 import { openingTimesTotalWidth } from './SlotSelect'
-import { Cog, Note, ShowerTruckLogo } from './Icon'
+import { Cog, Note, ShowerTruckLogo, Bubble } from './Icon'
 
 const { width } = Dimensions.get('window');
 const imageWidth = 887;
@@ -40,6 +40,7 @@ function Intro(props) {
 
     return (
         <View style={{ position: 'absolute', top: 0, height: '100%', width: '100%' }}>
+
             <View style={{ alignItems: 'center', flexDirection: 'row', padding: 25, paddingTop: 40, justifyContent: 'space-between', width: '100%' }}>
                 <TouchableOpacity activeOpacity={0.85}>
                     <Cog />
@@ -48,6 +49,12 @@ function Intro(props) {
                 <TouchableOpacity activeOpacity={0.85}>
                     <Note />
                 </TouchableOpacity>
+            </View>
+
+            <View>
+                <Bubble style={{ position: 'absolute', right: 30, top: 10 }} />
+                <Bubble style={{ position: 'absolute', left: width / 2 - 10, top: 140 }} scale={0.7} />
+                <Bubble style={{ position: 'absolute', left: 40, top: 90 }} scale={0.5} />
             </View>
 
             <View style={{ height: 195, position: 'absolute', bottom: 6 }}>

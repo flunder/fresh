@@ -1,36 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Animated, Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import Svg, { Rect, Path, Defs, LinearGradient, Stop } from "react-native-svg"
-import { Background, Gradient } from '../'
-import { Colors } from '../../constants'
-import { StepInt } from '../'
-import { basePrice } from '../../constants'
+import { Background, Gradient, StepInt } from '../'
+import { Colors, basePrice } from '../../constants'
 import { pageHeight } from '../Main'
+import { VisaLogo } from '../Icon'
+import { PaymentForm } from './'
 
 const { width, height } = Dimensions.get('window');
-
-function PaymentForm(props) {
-    return (
-        <View style={{ marginHorizontal: 25, flex: 1 }}>
-            <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                <Svg width={width-50} height={height} viewBox={`0 0 ${width-50} ${height}`}>
-                    <Defs>
-                        <LinearGradient x1="32.418%" y1="4.727%" x2="68.275%" y2="95.335%" id="gradient" >
-                            <Stop stopColor="#FAFAFA" offset="0%" />
-                            <Stop stopColor="#F8F7F7" offset="42.682%" />
-                            <Stop stopColor="#F4F4F6" offset="64.614%" />
-                            <Stop stopColor="#DADBE6" offset="100%" />
-                        </LinearGradient>
-                    </Defs>
-                    <Rect fill="url(#gradient)" x="0" y="0" width={'100%'} height={height*0.8} rx="18" />
-                </Svg>
-            </View>
-        </View>
-    )
-}
-
-
-
 
 function Payment({ price, scollToPage, pageOffsetY, ...props }) {
 
@@ -47,6 +24,11 @@ function Payment({ price, scollToPage, pageOffsetY, ...props }) {
     const hideThingsForNewPage = pageOffsetY.interpolate({
         inputRange: [0, pageHeight, pageHeight * 2],
         outputRange: [1, 1, 0],
+    })
+
+    const formOffsetY = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight, pageHeight * 2],
+        outputRange: [20, 20, -6],
     })
 
     return (
@@ -67,7 +49,7 @@ function Payment({ price, scollToPage, pageOffsetY, ...props }) {
 
             <Animated.View style={{ alignItems: 'center', transform: [{ translateY: priceOffsetY }], marginBottom: height * 0.1 }}>
 
-                <Animated.View style={{ opacity: 1, top: -20 }}>
+                <Animated.View style={{ opacity: 1, top: -10 }}>
                     <Svg width={11} height={6} viewBox="0 0 11 6">
                         <Path stroke={Colors.primary} strokeWidth={2} d="M1 5l4.5-4L10 5" fill={'none'} fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
                     </Svg>
@@ -88,13 +70,13 @@ function Payment({ price, scollToPage, pageOffsetY, ...props }) {
                 </Animated.View>
             </Animated.View>
 
-            {/* Payment Details */}
+            {/* Payment Details Form */}
 
             <View style={{ flex: 1, flexDirection: 'column' }}>
                 <View style={{ height: height * 0.7, width: '100%', position: 'absolute', bottom: 0 }}>
                     <Background width={width} height={height * 0.7 + 2} />
                 </View>
-                <PaymentForm />
+                <PaymentForm formOffsetY={formOffsetY} />
             </View>
 
         </View>

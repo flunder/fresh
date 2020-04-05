@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Animated, Dimensions, Image, Text, TouchableOpacity, View } from 'react-native'
 import Svg, { G, Path } from "react-native-svg"
-import { pageHeight } from './Main'
+import { pageHeight } from '../Main'
 import { openingTimesTotalWidth } from './SlotSelect'
-import { Cog, Note, ShowerTruckLogo, Bubble } from './Icon'
+import { Cog, Note, ShowerTruckLogo, Bubble } from '../Icon'
 
 const { width } = Dimensions.get('window');
 const imageWidth = 887;
 
-const CityImage = require('../assets/Images/CityScapeLarge.png');
+const CityImage = require('../../assets/Images/CityScapeLarge.png');
 const CityImageMeta = Image.resolveAssetSource(CityImage)
 
 function Intro(props) {
@@ -17,7 +17,7 @@ function Intro(props) {
 
     useEffect(() => {
         animateClouds();
-    })
+    }, [])
 
     const imageOffsetX = props.slotOffsetX.interpolate({
         inputRange: [0, openingTimesTotalWidth],

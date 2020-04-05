@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Animated, Dimensions, LayoutAnimation, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import Svg, { Path } from "react-native-svg"
-import { CustomLayoutSpring } from '../constants'
-const { width, height } = Dimensions.get('window');
+import { CustomLayoutSpring } from '../../constants'
 
+const { width, height } = Dimensions.get('window');
 const itemWidth = 50;
 
 export const openingTimes = {
@@ -134,7 +134,7 @@ function SlotSelect(props) {
                     <Path stroke="#FFF" strokeWidth={1} d="M1 6.5h89.154L94.9 2l4.658 4.5H183.5" fill="none" fillRule="evenodd" strokeLinecap="square" />
                 </Svg>
 
-                <TouchableOpacity onPress={() => { console.log('pressed');}} activeOpacity={0.85} disabled={submitButtonDisabled}>
+                <TouchableOpacity onPress={() => { props.scollToPage(1) }} activeOpacity={0.85} disabled={submitButtonDisabled}>
                     <Animated.Text style={{ opacity: submitButtonOpacity, color: 'white', textTransform: 'uppercase', fontSize: 18, fontFamily: 'CircularStd-Black' }}>Go for Refresh</Animated.Text>
                 </TouchableOpacity>
 

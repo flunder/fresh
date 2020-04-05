@@ -1,4 +1,6 @@
-import { View, UIManager, LayoutAnimation, Platform } from 'react-native'
+import React from 'react'
+import { View, LayoutAnimation, Platform } from 'react-native'
+import { Animated } from 'react-native'
 
 /*
     Colors
@@ -85,3 +87,84 @@ export const Places = [
         street: 'Athinaion'
     }
 ]
+
+/*
+    Prices
+*/
+
+export const basePrice = 3000;
+
+/*
+    A list of selectable options
+
+    as inactive items don't show as zero opacity,
+    i have a constant here to handle the opacities.
+*/
+
+export const optionsOpacities = {
+    title: { active: 1, inActive: 0.3 },
+    option: { active: 1, inActive: 0 }
+}
+
+export const optionsRaw = {
+    set: {
+        id: 1,
+        selected: false,
+        options: false,
+        quantity: 1,
+        title: "Shower Set",
+        price: 2000,
+        titleOpacity: new Animated.Value(optionsOpacities.title.inActive),
+        optionOpacity: new Animated.Value(optionsOpacities.option.inActive)
+    },
+    toothbrush: {
+        id: 2,
+        selected: false,
+        options: false,
+        quantity: 1,
+        title: "Toothbrush & Paste",
+        price: 500,
+        titleOpacity: new Animated.Value(optionsOpacities.title.inActive),
+        optionOpacity: new Animated.Value(optionsOpacities.option.inActive)
+    },
+    shaving: {
+        id: 3,
+        selected: false,
+        options: ['M', 'F'],
+        quantity: 1,
+        title: "Shaving Set",
+        price: 1500,
+        titleOpacity: new Animated.Value(optionsOpacities.title.inActive),
+        optionOpacity: new Animated.Value(optionsOpacities.option.inActive)
+    },
+    bathTowel: {
+        id: 4,
+        selected: false,
+        options: false,
+        quantity: 1,
+        title: "Bath Towel",
+        price: 750,
+        titleOpacity: new Animated.Value(optionsOpacities.title.inActive),
+        optionOpacity: new Animated.Value(optionsOpacities.option.inActive)
+    },
+    additionalTowel: {
+        id: 5,
+        selected: false,
+        options: false,
+        quantity: 1,
+        title: "Additional Towel",
+        price: 500,
+        titleOpacity: new Animated.Value(optionsOpacities.title.inActive),
+        optionOpacity: new Animated.Value(optionsOpacities.option.inActive)
+    },
+    underwear: {
+        id: 6,
+        selected: false,
+        options: ['M', 'F'],
+        quantity: 1,
+        title: "Cotton Underwear",
+        price: 1750,
+        titleOpacity: new Animated.Value(optionsOpacities.title.inActive),
+        optionOpacity: new Animated.Value(optionsOpacities.option.inActive)
+    },
+}

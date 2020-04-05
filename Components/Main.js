@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo  } from 'react'
 import { Animated, Dimensions, FlatList, Text, View } from 'react-native'
 import Svg, { Path } from "react-native-svg"
-import { Intro, SlotSelect, AddOnSelect, Gradient } from './'
+import {  Gradient } from './'
+import { Intro, SlotSelect, AddOnSelect, Payment } from './Pages'
+import { openingTimes } from './Pages/SlotSelect'
 import { Colors } from '../constants'
 import { useLocation } from '../Hooks'
-import { openingTimes } from './SlotSelect'
 import { padNumber } from '../helpers'
 import { Van, vanDimensions } from './Icon'
+import { optionsRaw } from '../constants'
 
 const { width, height } = Dimensions.get('window');
 
@@ -14,21 +16,32 @@ const { width, height } = Dimensions.get('window');
 export const pageHeight = height * 0.7;
 
 export const pages = [
-    { id: 1, backgroundColor: 'white', pageHeight: pageHeight },
-    { id: 2, backgroundColor: Colors.primary, pageHeight: height },
-    { id: 3, backgroundColor: 'white', pageHeight: pageHeight },
-    { id: 4, backgroundColor: Colors.primary, pageHeight: pageHeight },
+    { id: 1, backgroundColor: 'white', pageHeight: pageHeight, pageOffset: 0 },
+    { id: 2, backgroundColor: Colors.primary, pageHeight: pageHeight, pageOffset: height * 0.1 },
+    { id: 3, backgroundColor: 'white', pageHeight: height + height * 0.1, pageOffset: 0 },
+    { id: 4, backgroundColor: Colors.primary, pageHeight: height, pageOffset: 0 },
 ]
 
 function Main(props) {
 
+    const pagerRef = useRef();
+
+    // Location
+    const location = React.useMemo(() => useLocation(), []);
+
+    // Animations
     const pageOffsetY = useRef(new Animated.Value(0)).current;
     const slotOffsetX = useRef(new Animated.Value(0)).current;
     const helloVan = useRef(new Animated.Value(-vanDimensions.width * 2)).current;
-    const location = React.useMemo(() => useLocation(), []);
+
+    // Options & Price
+    const [options, setOptions] = useState(optionsRaw);
+    const [price, setPrice] = useState(0);
+    const [pageOffsets, setPageOffsets] = useState([]);
 
     useEffect(() => {
         // addScrollListenerForDebug();
+        getPageOffsets();
         rollVanIn();
     }, []);
 
@@ -116,6 +129,12 @@ function Main(props) {
         extrapolate: 'clamp'
     })
 
+    const locationOpacity = pageOffsetY.interpolate({
+        inputRange: [0, pageHeight, pageHeight * 2],
+        outputRange: [1, 1, 0],
+        extrapolate: 'clamp'
+    })
+
     const vanPosX = Animated.add(
         pageOffsetY.interpolate({
             inputRange: [0, pageHeight + 200],
@@ -124,9 +143,16 @@ function Main(props) {
         }
     ), helloVan);
 
+    scollToPage = (index) => {
+        pagerRef.current.scrollToOffset({
+            offset: pageOffsets[index-1],
+            animated: true
+        })
+    }
+
     renderItem = ({ item, index }) => {
         return (
-            <View style={{ height: item.pageHeight, width, backgroundColor: item.backgroundColor }}>
+            <View style={{ height: item.pageHeight, width }}>
 
                 {item.backgroundColor === Colors.primary && (
                     <Gradient
@@ -135,19 +161,27 @@ function Main(props) {
                         style={{ position: 'absolute' }}
                         color1="#5072F8"
                         color2="#4C51F7"
+                        opacity1={1}
+                        opacity2={2}
                         direction="normal"
                     />
                 )}
 
                 {item.id === 1 && <Intro slotOffsetX={slotOffsetX} />}
                 {item.id === 2 && (
-                    <View>
+                    <>
                         <Animated.View style={{ position: 'absolute', top: -90, transform: [{ translateX: vanPosX }] }}>
                             <Van />
                         </Animated.View>
-                        <SlotSelect opacity={slotSelectOpacity} slotOffsetX={slotOffsetX} />
-                        <AddOnSelect opacity={addOnSelectOpacity} />
-                    </View>
+                        <SlotSelect opacity={slotSelectOpacity} slotOffsetX={slotOffsetX} scollToPage={scollToPage} />
+                        <AddOnSelect opacity={addOnSelectOpacity} scollToPage options={options} setOptions={setOptions} price={price} setPrice={setPrice} />
+                    </>
+                )}
+                {item.id === 3 && (
+                    <Payment
+                        price={price}
+                        scollToPage={scollToPage}
+                    />
                 )}
             </View>
         )
@@ -158,23 +192,20 @@ function Main(props) {
         var inc = 0;
 
         for (var i = 0; i < pages.length; i++) {
-            inc = inc + pages[i].pageHeight;
+            inc = inc + (pages[i].pageHeight + pages[i].pageOffset);
             incrementalPages[i] = inc;
         }
 
-        return incrementalPages;
+        setPageOffsets(incrementalPages);
     }
 
     viewScroll = Animated.event(
         [{ nativeEvent: { contentOffset: { y: pageOffsetY } } }]
     )
 
-    console.log('rendering Main', location);
-
     return (
-        <View>
-
-            <Animated.View style={{ top: 0, left: 0, zIndex: 100, position: 'absolute', alignItems: 'center', width, top: 145, transform: [{ translateY: locationOffsetY }] }}>
+        <>
+            <Animated.View style={{ top: 0, left: 0, zIndex: 100, position: 'absolute', alignItems: 'center', width, top: 145, transform: [{ translateY: locationOffsetY }], opacity: locationOpacity }}>
                 <Animated.View style={{ opacity: pullUpOpacity, top: 25, transform: [{ translateY: pullUpOffsetY }] }}>
                     <Svg width={11} height={6} viewBox="0 0 11 6">
                         <Path stroke="white" strokeWidth={2} d="M1 5l4.5-4L10 5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
@@ -191,17 +222,18 @@ function Main(props) {
             </Animated.View>
 
             <FlatList
+                ref={pagerRef}
                 data={pages}
                 keyExtractor={pages => `${pages.id}`}
                 renderItem={renderItem}
 
                 snapToAlignment="start"
-                snapToOffsets={getPageOffsets()}
+                snapToOffsets={pageOffsets}
                 decelerationRate="fast"
                 showsVerticalScrollIndicator={false}
                 onScroll={viewScroll}
             />
-        </View>
+        </>
     )
 }
 

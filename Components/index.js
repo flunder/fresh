@@ -1,6 +1,7 @@
 export * from './Main'
-export * from './Intro'
-export * from './SlotSelect'
-export * from './AddOnSelect'
+
 export * from './Gradient'
 export * from './Icon'
+export * from './Checkbox'
+export * from './FlipOption'
+export * from './StepInt'

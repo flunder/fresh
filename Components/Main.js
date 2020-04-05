@@ -88,8 +88,8 @@ function Main(props) {
     })
 
     const locationOffsetY = pageOffsetY.interpolate({
-        inputRange: [0, pageHeight],
-        outputRange: [0, -(pageHeight*0.24)],
+        inputRange: [0, pageHeight, pageHeight * 2],
+        outputRange: [0, -(pageHeight*0.24), -(pageHeight*0.3) ],
         extrapolate: 'clamp'
     })
 
@@ -181,6 +181,7 @@ function Main(props) {
                     <Payment
                         price={price}
                         scollToPage={scollToPage}
+                        pageOffsetY={pageOffsetY}
                     />
                 )}
             </View>

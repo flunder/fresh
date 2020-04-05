@@ -16,6 +16,8 @@ export const Colors = {
     primaryLighter: 'red',
     primaryDarker: '#3F3FF7',
 
+    backgroundGradient: ['#5072F8', '#4C51F7'],
+
     success: 'green',
     error: 'red',
     warning: 'blue',

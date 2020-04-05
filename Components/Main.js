@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo  } from 'react'
 import { Animated, Dimensions, FlatList, Text, View } from 'react-native'
 import Svg, { Path } from "react-native-svg"
-import {  Gradient } from './'
+import {  Background } from './'
 import { Intro, SlotSelect, AddOnSelect, Payment } from './Pages'
 import { openingTimes } from './Pages/SlotSelect'
 import { Colors } from '../constants'
@@ -18,7 +18,7 @@ export const pageHeight = height * 0.7;
 export const pages = [
     { id: 1, backgroundColor: 'white', pageHeight: pageHeight, pageOffset: 0 },
     { id: 2, backgroundColor: Colors.primary, pageHeight: pageHeight, pageOffset: height * 0.1 },
-    { id: 3, backgroundColor: 'white', pageHeight: height + height * 0.1, pageOffset: 0 },
+    { id: 3, backgroundColor: 'white', pageHeight: height * 1.2, pageOffset: 0 },
     { id: 4, backgroundColor: Colors.primary, pageHeight: height, pageOffset: 0 },
 ]
 
@@ -155,15 +155,10 @@ function Main(props) {
             <View style={{ height: item.pageHeight, width }}>
 
                 {item.backgroundColor === Colors.primary && (
-                    <Gradient
+                    <Background
+                        style={{ position: 'absolute' }}
                         width={width}
                         height={item.pageHeight}
-                        style={{ position: 'absolute' }}
-                        color1="#5072F8"
-                        color2="#4C51F7"
-                        opacity1={1}
-                        opacity2={2}
-                        direction="normal"
                     />
                 )}
 
